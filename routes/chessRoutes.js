@@ -1,7 +1,15 @@
 const express = require('express');
 const Chess = require('chess.js').Chess;
-
+const auth = require('./auth'); 
 const router = express.Router();
+router.post('/login', auth.authenticateLocal, (req, res) => {
+  const token = auth.createToken(req.user);
+  res.json({ token });
+});
+
+router.get('/protected', auth.authenticateJwt, (req, res) => {
+  res.json({ message: 'You have access to this protected route' });
+});
 
 // Create a dictionary to store chess game instances based on game IDs
 const games = {};
